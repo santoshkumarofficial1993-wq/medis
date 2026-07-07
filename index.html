@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Satori — The Art of Stillness</title>
+    <style>
+        :root {
+            --bg: #111111;
+            --surface: #1a1a1a;
+            --surface-light: #252525;
+            --gold: #c49a6c;
+            --gold-light: #e2c199;
+            --gold-dark: #a37b50;
+            --text: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --text-muted: #808080;
+            --border: #333333;
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --shadow: 0 10px 30px rgba(0,0,0,0.5);
+            --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-sans);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            padding: 20px 40px;
+            transition: background 0.4s;
+            background: transparent;
+        }
+        .navbar.scrolled {
+            background: rgba(17,17,17,0.85);
+            backdrop-filter: blur(20px);
+            padding: 14px 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+        .navbar-inner {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo {
+            font-family: var(--font-serif);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--gold);
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 8px;
+            list-style: none;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            padding: 8px 18px;
+            border-radius: 20px;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+        .nav-links a:hover {
+            color: var(--gold-light);
+            background: rgba(196,154,108,0.15);
+        }
+        .nav-cta {
+            border: 1px solid var(--gold) !important;
+            color: var(--gold) !important;
+        }
+        .nav-cta:hover {
+            background: var(--gold) !important;
+            color: #111 !important;
+        }
+
+        /* Hero */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: url('https://images.unsplash.com/photo-1506126613408-eca07ce68773?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80') center/cover no-repeat;
+            filter: brightness(0.35) saturate(0.8);
+            transform: scale(1.05);
+            transition: transform 1.2s ease;
+        }
+        .hero:hover .hero-bg { transform: scale(1); }
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at center, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.8) 80%);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 800px;
+            padding: 0 20px;
+        }
+        .hero-content h1 {
+            font-family: var(--font-serif);
+            font-size: clamp(3rem, 7vw, 5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            color: #fff;
+            margin-bottom: 24px;
+            letter-spacing: 1px;
+        }
+        .hero-content h1 span {
+            color: var(--gold-light);
+            font-style: italic;
+        }
+        .hero-content p {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.75);
+            margin-bottom: 40px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 30px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            cursor: pointer;
+            transition: var(--transition);
+            letter-spacing: 0.5px;
+            border: none;
+        }
+        .btn-primary {
+            background: var(--gold);
+            color: #111;
+            box-shadow: 0 6px 20px rgba(196,154,108,0.3);
+        }
+        .btn-primary:hover {
+            background: var(--gold-light);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(196,154,108,0.5);
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--gold-light);
+            border: 1.5px solid var(--gold);
+        }
+        .btn-outline:hover {
+            background: rgba(196,154,108,0.1);
+        }
+
+        /* Sections */
+        .section {
+            padding: 120px 32px;
+        }
+        .section-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .section-label {
+            font-family: var(--font-sans);
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--gold);
+            margin-bottom: 16px;
+            display: block;
+        }
+        .section-title {
+            font-family: var(--font-serif);
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #fff;
+            letter-spacing: 0.5px;
+        }
+        .section-subtitle {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            margin-bottom: 60px;
+            max-width: 550px;
+        }
+
+        /* Pathways - alternating timeline */
+        .pathway-row {
+            display: flex;
+            align-items: center;
+            gap: 60px;
+            margin-bottom: 80px;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s, transform 0.8s;
+        }
+        .pathway-row.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .pathway-row:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+        .pathway-img {
+            flex: 1;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+            border: 1px solid #333;
+        }
+        .pathway-img img {
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.6s;
+        }
+        .pathway-row:hover .pathway-img img {
+            transform: scale(1.03);
+        }
+        .pathway-text {
+            flex: 1;
+        }
+        .pathway-text h3 {
+            font-family: var(--font-serif);
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+        .pathway-text p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+        .pathway-text .step-number {
+            font-family: var(--font-serif);
+            font-size: 4rem;
+            font-weight: 700;
+            color: rgba(196,154,108,0.15);
+            line-height: 1;
+            margin-bottom: -10px;
+        }
+
+        /* Session cards */
+        .session-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+        .session-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+            position: relative;
+        }
+        .session-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--gold);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        .session-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .session-card .card-body {
+            padding: 24px;
+        }
+        .tag {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--gold);
+            background: rgba(196,154,108,0.1);
+            padding: 4px 12px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        .session-card h3 {
+            font-family: var(--font-serif);
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+        .session-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Breathing section */
+        .breath-panel {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 70px 40px;
+            text-align: center;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+        .breath-panel::before {
+            content: "";
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(196,154,108,0.2) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .breath-mandala {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            position: relative;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .mandala-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid rgba(196,154,108,0.4);
+            animation: rotate 20s linear infinite;
+        }
+        .ring1 { width: 100%; height: 100%; }
+        .ring2 { width: 80%; height: 80%; animation-duration: 25s; animation-direction: reverse; }
+        .ring3 { width: 60%; height: 60%; animation-duration: 15s; }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .breath-core {
+            width: 60px;
+            height: 60px;
+            background: var(--gold);
+            border-radius: 50%;
+            z-index: 2;
+            transition: transform 4s ease-in-out, box-shadow 4s;
+            box-shadow: 0 0 40px rgba(196,154,108,0.5);
+        }
+        .breath-core.inhale { transform: scale(2); box-shadow: 0 0 70px rgba(196,154,108,0.8); }
+        .breath-core.exhale { transform: scale(1); box-shadow: 0 0 30px rgba(196,154,108,0.4); }
+        .breath-text {
+            position: relative;
+            z-index: 3;
+            color: #111;
+            font-weight: 700;
+            font-size: 1rem;
+            pointer-events: none;
+            transition: color 0.3s;
+        }
+        .breath-core.inhale .breath-text, .breath-core.exhale .breath-text { color: #fff; }
+
+        /* Timer with circular progress */
+        .timer-section {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 60px 40px;
+            border: 1px solid var(--border);
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .circular-timer {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 30px;
+        }
+        .circular-timer svg {
+            transform: rotate(-90deg);
+            width: 100%;
+            height: 100%;
+        }
+        .timer-bg-circle {
+            fill: none;
+            stroke: #2a2a2a;
+            stroke-width: 8;
+        }
+        .timer-progress-circle {
+            fill: none;
+            stroke: var(--gold);
+            stroke-width: 8;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s linear;
+        }
+        .timer-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #fff;
+            font-family: var(--font-serif);
+        }
+        .timer-presets {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+        .timer-preset {
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        .timer-preset.active, .timer-preset:hover {
+            border-color: var(--gold);
+            color: var(--gold-light);
+            background: rgba(196,154,108,0.1);
+        }
+
+        .footer {
+            background: #0a0a0a;
+            padding: 40px;
+            text-align: center;
+            color: var(--text-muted);
+            border-top: 1px solid #222;
+        }
+
+        @media (max-width: 900px) {
+            .pathway-row, .pathway-row:nth-child(even) {
+                flex-direction: column;
+                gap: 30px;
+            }
+            .pathway-img, .pathway-text { flex: auto; }
+            .hero-content h1 { font-size: 2.6rem; }
+        }
+        @media (max-width: 600px) {
+            .nav-links .hide-mobile { display: none; }
+            .section { padding: 80px 16px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="navbar-inner">
+            <a href="#" class="logo">Satori</a>
+            <ul class="nav-links">
+                <li><a href="#pathways" class="hide-mobile">Path</a></li>
+                <li><a href="#sessions">Sessions</a></li>
+                <li><a href="#breathe">Breathe</a></li>
+                <li><a href="#timer">Timer</a></li>
+                <li><a href="#" class="nav-cta">Begin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>Find your <span>stillness</span> in the dark</h1>
+            <p>A sanctuary for deep meditation, mindful breathing, and inner transformation.</p>
+            <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+                <a href="#sessions" class="btn btn-primary">Explore Sessions</a>
+                <a href="#breathe" class="btn btn-outline">Try Breathing</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pathways - Alternating Timeline -->
+    <section class="section" id="pathways">
+        <div class="section-inner">
+            <span class="section-label">The Journey</span>
+            <h2 class="section-title">Pathways to Peace</h2>
+            <p class="section-subtitle">Every step leads you deeper into presence. Follow the golden thread.</p>
+
+            <div class="pathway-row">
+                <div class="pathway-img">
+                    <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="sit still">
+                </div>
+                <div class="pathway-text">
+                    <div class="step-number">01</div>
+                    <h3>Sit with Intention</h3>
+                    <p>Begin by simply arriving. Find a comfortable seat, close your eyes, and set a gentle intention for your practice.</p>
+                </div>
+            </div>
+
+            <div class="pathway-row">
+                <div class="pathway-img">
+                    <img src="https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="breath awareness">
+                </div>
+                <div class="pathway-text">
+                    <div class="step-number">02</div>
+                    <h3>Follow the Breath</h3>
+                    <p>Anchor your attention to the natural rhythm of your inhale and exhale. Let thoughts drift like clouds.</p>
+                </div>
+            </div>
+
+            <div class="pathway-row">
+                <div class="pathway-img">
+                    <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="inner stillness">
+                </div>
+                <div class="pathway-text">
+                    <div class="step-number">03</div>
+                    <h3>Rest in Stillness</h3>
+                    <p>Gradually release effort. Abide in the quiet space between thoughts, where true calm resides.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sessions Grid -->
+    <section class="section" id="sessions">
+        <div class="section-inner">
+            <span class="section-label">Guided Practice</span>
+            <h2 class="section-title">Deepen Your Experience</h2>
+            <p class="section-subtitle">Curated sessions with immersive soundscapes and nature imagery.</p>
+            <div class="session-grid">
+                <div class="session-card">
+                    <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="ocean calm">
+                    <div class="card-body">
+                        <span class="tag">Morning</span>
+                        <h3>Ocean Serenity</h3>
+                        <p>10 min · Gentle waves & mindfulness</p>
+                    </div>
+                </div>
+                <div class="session-card">
+                    <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="forest focus">
+                    <div class="card-body">
+                        <span class="tag">Focus</span>
+                        <h3>Forest Clarity</h3>
+                        <p>15 min · Sharpen concentration</p>
+                    </div>
+                </div>
+                <div class="session-card">
+                    <img src="https://images.unsplash.com/photo-1518459031867-a89f3df19f3c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="night rest">
+                    <div class="card-body">
+                        <span class="tag">Sleep</span>
+                        <h3>Moonlit Rest</h3>
+                        <p>20 min · Yoga nidra for deep sleep</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Breathing Exercise with Mandala -->
+    <section class="section" id="breathe">
+        <div class="section-inner">
+            <div class="breath-panel">
+                <span class="section-label">Interactive Tool</span>
+                <h2 class="section-title">Golden Breath</h2>
+                <p class="section-subtitle" style="margin:0 auto 30px;">Inhale 4s · Hold 4s · Exhale 4s · Hold 4s</p>
+                <div class="breath-mandala" id="breathMandala">
+                    <div class="mandala-ring ring1"></div>
+                    <div class="mandala-ring ring2"></div>
+                    <div class="mandala-ring ring3"></div>
+                    <div class="breath-core" id="breathCore">
+                        <span class="breath-text" id="breathText">Start</span>
+                    </div>
+                </div>
+                <p id="breathInstruction" style="color:var(--text-secondary);">Click the golden center to begin</p>
+                <button class="btn btn-primary" id="breathToggleBtn" style="margin-top:20px;">Start Breathing</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Timer with Circular Progress -->
+    <section class="section" id="timer">
+        <div class="section-inner">
+            <div class="timer-section">
+                <span class="section-label">Meditation Timer</span>
+                <h2 class="section-title" style="font-size:2rem; margin-bottom:8px;">Silent Sitting</h2>
+                <div class="circular-timer">
+                    <svg viewBox="0 0 100 100">
+                        <circle class="timer-bg-circle" cx="50" cy="50" r="45"/>
+                        <circle class="timer-progress-circle" id="timerProgress" cx="50" cy="50" r="45"
+                        stroke-dasharray="282.74" stroke-dashoffset="0"/>
+                    </svg>
+                    <div class="timer-text" id="timerDisplay">05:00</div>
+                </div>
+                <div class="timer-presets">
+                    <button class="timer-preset active" data-minutes="5">5 min</button>
+                    <button class="timer-preset" data-minutes="10">10 min</button>
+                    <button class="timer-preset" data-minutes="15">15 min</button>
+                    <button class="timer-preset" data-minutes="20">20 min</button>
+                </div>
+                <div style="display:flex; gap:14px; justify-content:center;">
+                    <button class="btn btn-primary" id="timerStartBtn">Start</button>
+                    <button class="btn btn-outline" id="timerResetBtn">Reset</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>© 2026 Satori. Crafted with intention for your inner journey.</p>
+    </footer>
+
+    <script>
+        // Navbar scroll
+        window.addEventListener('scroll', () => {
+            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 30);
+        });
+
+        // Scroll reveal for pathways
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, { threshold: 0.2 });
+        document.querySelectorAll('.pathway-row').forEach(row => observer.observe(row));
+
+        // Breathing mandala logic
+        const breathCore = document.getElementById('breathCore');
+        const breathText = document.getElementById('breathText');
+        const breathInstruction = document.getElementById('breathInstruction');
+        const breathToggleBtn = document.getElementById('breathToggleBtn');
+        let breathActive = false, breathPhase = 0, breathInterval;
+        const phases = ['Inhale slowly...', 'Hold gently...', 'Exhale slowly...', 'Hold...'];
+        const durations = [4000,4000,4000,4000];
+
+        function stopBreathing() {
+            breathActive = false;
+            clearInterval(breathInterval);
+            breathCore.classList.remove('inhale','exhale');
+            breathText.textContent = 'Start';
+            breathInstruction.textContent = 'Click the golden center to begin';
+            breathToggleBtn.textContent = 'Start Breathing';
+            breathPhase = 0;
+        }
+        function runBreathPhase() {
+            if (!breathActive) return;
+            const phase = breathPhase % 4;
+            breathInstruction.textContent = phases[phase];
+            if (phase === 0) { breathCore.classList.add('inhale'); breathCore.classList.remove('exhale'); breathText.textContent = 'In'; }
+            else if (phase === 1) { breathText.textContent = 'Hold'; }
+            else if (phase === 2) { breathCore.classList.remove('inhale'); breathCore.classList.add('exhale'); breathText.textContent = 'Out'; }
+            else { breathText.textContent = 'Hold'; }
+            breathPhase++;
+            breathInterval = setTimeout(runBreathPhase, durations[phase]);
+        }
+        function toggleBreathing() {
+            if (breathActive) stopBreathing();
+            else {
+                breathActive = true; breathPhase = 0;
+                breathCore.classList.add('inhale'); breathText.textContent = 'In';
+                breathInstruction.textContent = 'Inhale slowly...';
+                breathToggleBtn.textContent = 'Stop Breathing';
+                breathInterval = setTimeout(runBreathPhase, durations[0]);
+            }
+        }
+        document.getElementById('breathMandala').addEventListener('click', toggleBreathing);
+        breathToggleBtn.addEventListener('click', toggleBreathing);
+
+        // Circular timer logic
+        const timerDisplay = document.getElementById('timerDisplay');
+        const progressCircle = document.getElementById('timerProgress');
+        const timerStartBtn = document.getElementById('timerStartBtn');
+        const timerResetBtn = document.getElementById('timerResetBtn');
+        const presets = document.querySelectorAll('.timer-preset');
+        const circumference = 2 * Math.PI * 45; // 282.74
+        let totalSeconds = 300, remainingSeconds = 300, timerRunning = false, timerInterval;
+
+        function updateTimerUI() {
+            const mins = Math.floor(remainingSeconds / 60);
+            const secs = remainingSeconds % 60;
+            timerDisplay.textContent = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+            const offset = circumference - (remainingSeconds / totalSeconds) * circumference;
+            progressCircle.style.strokeDashoffset = offset;
+        }
+        function setPreset(minutes) {
+            totalSeconds = minutes * 60;
+            remainingSeconds = totalSeconds;
+            updateTimerUI();
+            presets.forEach(p => p.classList.remove('active'));
+            document.querySelector(`[data-minutes="${minutes}"]`).classList.add('active');
+        }
+        presets.forEach(p => {
+            p.addEventListener('click', () => {
+                if (!timerRunning) setPreset(parseInt(p.dataset.minutes));
+            });
+        });
+        function stopTimer() {
+            timerRunning = false;
+            clearInterval(timerInterval);
+            timerStartBtn.textContent = 'Start';
+        }
+        function resetTimer() {
+            stopTimer();
+            const activePreset = document.querySelector('.timer-preset.active');
+            setPreset(activePreset ? parseInt(activePreset.dataset.minutes) : 5);
+        }
+        timerStartBtn.addEventListener('click', () => {
+            if (timerRunning) { stopTimer(); return; }
+            if (remainingSeconds <= 0) { resetTimer(); return; }
+            timerRunning = true;
+            timerStartBtn.textContent = 'Pause';
+            timerInterval = setInterval(() => {
+                if (remainingSeconds <= 0) {
+                    stopTimer();
+                    playChime();
+                    resetTimer();
+                    return;
+                }
+                remainingSeconds--;
+                updateTimerUI();
+            }, 1000);
+        });
+        timerResetBtn.addEventListener('click', resetTimer);
+        function playChime() {
+            try {
+                const ctx = new (window.AudioContext||window.webkitAudioContext)();
+                [523.25, 659.25, 783.99].forEach((freq, i) => {
+                    const osc = ctx.createOscillator(), gain = ctx.createGain();
+                    osc.type = 'sine'; osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0.15, ctx.currentTime + i*0.2);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i*0.2 + 1.2);
+                    osc.connect(gain); gain.connect(ctx.destination);
+                    osc.start(ctx.currentTime + i*0.2); osc.stop(ctx.currentTime + i*0.2 + 1.2);
+                });
+            } catch(e) {}
+        }
+        updateTimerUI();
+    </script>
+</body>
+</html>
